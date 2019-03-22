@@ -20,7 +20,12 @@ public class Controller implements Initializable {
     private Button myButton;
 
     @FXML
+    private Button openDir;
+
+    @FXML
     private TextField myText;
+
+    @FXML
     public TextField ignoreFileSize;
 
     @FXML
@@ -54,7 +59,7 @@ public class Controller implements Initializable {
         long size0;
         File file = new File(path);
         size0 = getDirSize(file);
-        TreeItem<String> item = new TreeItem<>("【" + file.getName() + "】" + "\t\t\t大小：" + sizeFormat(size0));
+        TreeItem<String> item = new TreeItem<>("["+sizeFormat(size0)+ "]\t" + file.getName());
         item.setExpanded(false);
         if (file.exists()) {
             File[] files = file.listFiles();
@@ -80,7 +85,7 @@ public class Controller implements Initializable {
                         } else {
                             size0 = file2.length();
                             if (size == 0 || size0 > size) {
-                                TreeItem<String> i2 = new TreeItem<>(file2.getName() + "\t\t\t大小：" + sizeFormat(size0));
+                                TreeItem<String> i2 = new TreeItem<>("["+sizeFormat(size0)+ "]\t"+file2.getName());
                                 item.getChildren().add(i2);
                             }
                         }
@@ -94,13 +99,15 @@ public class Controller implements Initializable {
     }
 
     //"生成文件树"按钮
-    public void getDir(ActionEvent event) {
+    public void getDir(ActionEvent event){
+        //myButton.setText("生成中...");
         String path = myText.getText();
         System.out.println(path);
         long size = Long.parseLong(ignoreFileSize.getText());
         TreeItem<String> item = initTreeView(path, size * 1024);
         item.setExpanded(true);
         myTreeView.setRoot(item);
+        //myButton.setText("生成文件树");
     }
 
     //"选择目录"按钮：获得想要制作文件树的路径
@@ -136,13 +143,13 @@ public class Controller implements Initializable {
     //文件大小格式化
     private static String sizeFormat(long size) {
         if (size < 1024)
-            return size + "B  ";
+            return size + " B";
         else if (size < 1024 * 1024)
-            return String.format("%.2f", size / 1024.0) + "KB  ";
+            return String.format("%.2f", size / 1024.0) + "KB";
         else if (size < 1024 * 1024 * 1024)
-            return String.format("%.2f", size / (1024 * 1024.0)) + "MB  ";
+            return String.format("%.2f", size / (1024 * 1024.0)) + "MB";
         else
-            return String.format("%.2f", size / (1024 * 1024 * 1024.0)) + "GB  ";
+            return String.format("%.2f", size / (1024 * 1024 * 1024.0)) + "GB";
     }
 
 }
