@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="691.0" prefWidth="682.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <Button fx:id="myButton" layoutX="569.0" layoutY="64.0" mnemonicParsing="false" onAction="#getDir" prefHeight="30.0" prefWidth="95.0" text="生成文件树" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="64.0" />
+      <TextField fx:id="myText" layoutX="38.0" layoutY="32.0" prefHeight="30.0" prefWidth="549.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="116.0" AnchorPane.topAnchor="18.0" />
+      <TreeView fx:id="myTreeView" layoutX="18.0" layoutY="107.0" prefHeight="566.0" prefWidth="646.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="107.0" />
+      <Button fx:id="openDir" layoutX="584.0" layoutY="18.0" mnemonicParsing="false" onAction="#openDir" text="选择目录" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="18.0" />
+      <TextField fx:id="ignoreFileSize" layoutX="449.0" layoutY="64.0" prefHeight="30.0" prefWidth="95.0" text="0" AnchorPane.rightAnchor="138.0" AnchorPane.topAnchor="64.0" />
+      <Label layoutX="341.0" layoutY="69.0" text="过滤过小文件：" AnchorPane.rightAnchor="236.0" AnchorPane.topAnchor="69.0" />
+      <Label layoutX="547.0" layoutY="69.0" text="KB" AnchorPane.rightAnchor="116.0" AnchorPane.topAnchor="69.0" />
+   </children>
+</AnchorPane>
