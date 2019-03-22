@@ -12,10 +12,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage){
-        Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-            primaryStage.setTitle("Hello World");
+            Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+            primaryStage.setTitle("文件树生成器");
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
         } catch (IOException e) {
