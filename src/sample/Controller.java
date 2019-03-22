@@ -15,12 +15,17 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import static sample.fileTool.*;
+
 public class Controller implements Initializable {
     @FXML
     private Button myButton;
 
     @FXML
     private Button openDir;
+
+    @FXML
+    private Button saveDir;
 
     @FXML
     private TextField myText;
@@ -41,6 +46,7 @@ public class Controller implements Initializable {
 
     /**
      * 生成目录文件树；包含文件、目录大小
+     *
      * @param path 路径
      * @return TreeItem<String>
      */
@@ -51,6 +57,7 @@ public class Controller implements Initializable {
 
     /**
      * 生成目录文件树；包含文件、目录大小
+     *
      * @param path 路径
      * @param size 过滤小于size字节的文件
      * @return TreeItem<String>
@@ -59,7 +66,7 @@ public class Controller implements Initializable {
         long size0;
         File file = new File(path);
         size0 = getDirSize(file);
-        TreeItem<String> item = new TreeItem<>("["+sizeFormat(size0)+ "]\t" + file.getName());
+        TreeItem<String> item = new TreeItem<>("[" + sizeFormat(size0) + "]\t" + file.getName());
         item.setExpanded(false);
         if (file.exists()) {
             File[] files = file.listFiles();
@@ -85,7 +92,7 @@ public class Controller implements Initializable {
                         } else {
                             size0 = file2.length();
                             if (size == 0 || size0 > size) {
-                                TreeItem<String> i2 = new TreeItem<>("["+sizeFormat(size0)+ "]\t"+file2.getName());
+                                TreeItem<String> i2 = new TreeItem<>("[" + sizeFormat(size0) + "]\t" + file2.getName());
                                 item.getChildren().add(i2);
                             }
                         }
@@ -99,7 +106,7 @@ public class Controller implements Initializable {
     }
 
     //"生成文件树"按钮
-    public void getDir(ActionEvent event){
+    public void getDir(ActionEvent event) {
         //myButton.setText("生成中...");
         String path = myText.getText();
         System.out.println(path);
@@ -108,6 +115,7 @@ public class Controller implements Initializable {
         item.setExpanded(true);
         myTreeView.setRoot(item);
         //myButton.setText("生成文件树");
+        System.out.println(path + "1");
     }
 
     //"选择目录"按钮：获得想要制作文件树的路径
@@ -117,39 +125,12 @@ public class Controller implements Initializable {
         myText.setText(file.getPath());
     }
 
-
-    //获取文件夹目录大小
-    private static long getDirSize(File file) {
-        long size = 0;
-        if (file.exists()) {
-            File[] files = file.listFiles();
-            if (files != null) {
-                if (files.length == 0)
-                    return 0;
-                else {
-                    for (File file1 : files) {
-                        if (file1.isDirectory()) {
-                            size = size + getDirSize(file1);
-                        } else {
-                            size = size + file1.length();
-                        }
-                    }
-                }
-            }
-        }
-        return size;
-    }
-
-    //文件大小格式化
-    private static String sizeFormat(long size) {
-        if (size < 1024)
-            return size + " B";
-        else if (size < 1024 * 1024)
-            return String.format("%.2f", size / 1024.0) + "KB";
-        else if (size < 1024 * 1024 * 1024)
-            return String.format("%.2f", size / (1024 * 1024.0)) + "MB";
-        else
-            return String.format("%.2f", size / (1024 * 1024 * 1024.0)) + "GB";
+    //"保存文件树"按钮：将层级目录保存到本地
+    public void saveDir(ActionEvent event) {
+        String path = myText.getText();
+        long size = Long.parseLong(ignoreFileSize.getText());
+        File file = new File(path);
+        saveFileTree(path, file.getName(), size);
     }
 
 }

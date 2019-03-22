@@ -14,8 +14,10 @@
              AnchorPane.topAnchor="107.0"/>
    <Button fx:id="openDir" layoutX="584.0" layoutY="18.0" mnemonicParsing="false" onAction="#openDir" prefHeight="30.0"
            prefWidth="80.0" text="选择目录" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="18.0"/>
-   <TextField fx:id="ignoreFileSize" layoutX="449.0" layoutY="64.0" prefHeight="30.0" prefWidth="95.0" text="0"
-              AnchorPane.rightAnchor="138.0" AnchorPane.topAnchor="64.0"/>
-   <Label layoutX="341.0" layoutY="69.0" text="过滤过小文件：" AnchorPane.rightAnchor="236.0" AnchorPane.topAnchor="69.0"/>
-   <Label layoutX="547.0" layoutY="69.0" text="KB" AnchorPane.rightAnchor="116.0" AnchorPane.topAnchor="69.0"/>
+   <TextField fx:id="ignoreFileSize" layoutX="322.0" layoutY="64.0" prefHeight="30.0" prefWidth="95.0" text="0"
+              AnchorPane.rightAnchor="265.0" AnchorPane.topAnchor="64.0"/>
+   <Label layoutX="217.0" layoutY="69.0" text="过滤过小文件：" AnchorPane.rightAnchor="360.0" AnchorPane.topAnchor="69.0"/>
+   <Label layoutX="420.0" layoutY="69.0" text="KB" AnchorPane.rightAnchor="243.0" AnchorPane.topAnchor="69.0"/>
+   <Button fx:id="saveDir" layoutX="448.0" layoutY="64.0" mnemonicParsing="false" onAction="#saveDir" prefHeight="30.0"
+           prefWidth="95.0" text="保存文件树" AnchorPane.rightAnchor="131.0" AnchorPane.topAnchor="64.0"/>
 </AnchorPane>
