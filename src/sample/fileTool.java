@@ -98,19 +98,16 @@ class fileTool {
         long size = 0;
         if (file.exists()) {
             File[] files = file.listFiles();
-            if (files != null) {
-                if (files.length == 0)
-                    return 0;
-                else {
-                    for (File file1 : files) {
-                        if (file1.isDirectory()) {
-                            size = size + getDirSize(file1);
-                        } else {
-                            size = size + file1.length();
-                        }
+            if (files != null && files.length != 0)
+                for (File file1 : files) {
+                    if (file1.isDirectory()) {
+                        size = size + getDirSize(file1);
+                    } else {
+                        size = size + file1.length();
                     }
                 }
-            }
+            else
+                return 0;
         }
         return size;
     }
