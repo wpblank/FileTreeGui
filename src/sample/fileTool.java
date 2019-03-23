@@ -33,94 +33,63 @@ class fileTool {
      * @param level level为初始层级，一般为0
      *              保存目录文件和文件夹名称和大小
      */
-    private static void saveFileTree(String path, String name, long size, int level) {
+    private static void saveFileTree(String path, String name, long size, int level) throws IOException {
         File file = new File(path);
-        BufferedWriter bufw = null;
-        try {
-            FileWriter fw = new FileWriter(name + ".txt", true);
-            bufw = new BufferedWriter(fw);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FileWriter fw = new FileWriter(name + ".txt", true);
+        BufferedWriter bufw = new BufferedWriter(fw);
+
         level++;
         if (file.exists()) {
             File[] files = file.listFiles();
-            if (files != null && bufw != null) {
-                if (files.length != 0) {
-                    //对文件和文件夹进行排序
-                    Arrays.sort(files, (o1, o2) -> {
-                        //将文件夹与文件分开排序
-                        if (o1.isDirectory() && o2.isFile())
-                            return -1;
-                        else if (o2.isDirectory() && o1.isFile())
-                            return 1;
-                        //对字符串大写处理，使返回的拼音为小写、英文为大写，从而将英文和中文分开排序。
-                        return GetPinYin.getPinYin(o1.getName().toUpperCase()).compareTo(GetPinYin.getPinYin(o2.getName().toUpperCase()));
-                    });
+            if (files != null && files.length != 0) {
+                //对文件和文件夹进行排序
+                Arrays.sort(files, (o1, o2) -> {
+                    //将文件夹与文件分开排序
+                    if (o1.isDirectory() && o2.isFile())
+                        return -1;
+                    else if (o2.isDirectory() && o1.isFile())
+                        return 1;
+                    //对字符串大写处理，使返回的拼音为小写、英文为大写，从而将英文和中文分开排序。
+                    return GetPinYin.getPinYin(o1.getName().toUpperCase()).compareTo(GetPinYin.getPinYin(o2.getName().toUpperCase()));
+                });
 
-                    long size0;
-                    for (File file2 : files) {
-
-                        if (file2.isDirectory()) {
-                            size0 = getDirSize(file2);
-                            if (size == 0 || size0 > size) {
-                                try {
-                                    bufw.write(levelSign(level) + "[" + sizeFormat(size0) + "]\t【" + file2.getName() + "】");
-                                    bufw.newLine();
-                                    bufw.flush();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                saveFileTree(file2.getAbsolutePath(), name, size, level);
-                            }
-                        } else {
-                            size0 = file2.length();
-                            if (size == 0 || size0 > size) {
-                                try {
-                                    bufw.write(levelSign(level) + "[" + sizeFormat(size0) + "]\t" + file2.getName());
-                                    bufw.newLine();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                long size0;
+                for (File file2 : files) {
+                    if (file2.isDirectory()) {
+                        size0 = getDirSize(file2);
+                        if (size == 0 || size0 > size) {
+                            bufw.write(levelSign(level) + sizeFormat(size0) + "【" + file2.getName() + "】");
+                            bufw.newLine();
+                            bufw.flush();
+                            saveFileTree(file2.getAbsolutePath(), name, size, level);
+                        }
+                    } else {
+                        size0 = file2.length();
+                        if (size == 0 || size0 > size) {
+                            bufw.write(levelSign(level) + sizeFormat(size0) + file2.getName());
+                            bufw.newLine();
                         }
                     }
-                    //对每个文件夹进行一下分隔
-                    try {
-                        bufw.write(levelSign(level) + separateDir(level));
-                        bufw.newLine();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //System.out.println(levelSign(level) + separateDir(level));
-
                 }
+                //对每个文件夹进行一下分隔
+                bufw.write(levelSign(level) + separateDir(level));
+                bufw.newLine();
             }
+
         } else {
             System.out.println("文件夹不存在!");
         }
-        if (bufw != null) {
-            try {
-                bufw.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    bufw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        bufw.flush();
+        bufw.close();
     }
 
     //保存目录文件和文件夹名称和大小
-    static void saveFileTree(String path, String name) {
+    static void saveFileTree(String path, String name) throws IOException {
         saveFileTree(path, name, 0, 0);
     }
 
     //保存目录文件和文件夹名称和大小,并过滤文件大小小于size的
-    static void saveFileTree(String path, String name, long size) {
+    static void saveFileTree(String path, String name, long size) throws IOException {
         saveFileTree(path, name, size, 0);
     }
 
@@ -149,13 +118,13 @@ class fileTool {
     //文件大小格式化
     static String sizeFormat(long size) {
         if (size < 1024)
-            return size + " B";
+            return "[" + size + "B]";
         else if (size < 1024 * 1024)
-            return String.format("%.2f", size / 1024.0) + "KB";
+            return "[" + String.format("%.1f", size / 1024.0) + "KB]";
         else if (size < 1024 * 1024 * 1024)
-            return String.format("%.2f", size / (1024 * 1024.0)) + "MB";
+            return "[" + String.format("%.1f", size / (1024 * 1024.0)) + "MB]";
         else
-            return String.format("%.2f", size / (1024 * 1024 * 1024.0)) + "GB";
+            return "[" + String.format("%.1f", size / (1024 * 1024 * 1024.0)) + "GB]";
     }
 
 }
