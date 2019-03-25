@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -62,6 +63,7 @@ public class Controller implements Initializable {
      * @return TreeItem<String>
      */
     private TreeItem<String> initTreeView(String path, long size) {
+
         long size0;
         File file = new File(path);
         size0 = getDirSize(file);
@@ -105,30 +107,44 @@ public class Controller implements Initializable {
 
     //"生成文件树"按钮
     public void getDir(ActionEvent event) {
-        //myButton.setText("生成中...");
-        String path = myText.getText();
-        System.out.println(path);
-        long size = Long.parseLong(ignoreFileSize.getText());
-        TreeItem<String> item = initTreeView(path, size * 1024);
-        item.setExpanded(true);
-        myTreeView.setRoot(item);
-        //myButton.setText("生成文件树");
-        //System.out.println(path + "1");
+        //多线程
+        new Thread(() -> {
+            String path = myText.getText();
+
+            Platform.runLater(() -> myButton.setText("生成中..."));
+            System.out.println(path);
+            long size = Long.parseLong(ignoreFileSize.getText());
+            TreeItem<String> item = initTreeView(path, size * 1024);
+            item.setExpanded(true);
+            //等到Application Thread空闲的时候，Platform.runLater就会自动执行队列中修改界面的工作了
+            Platform.runLater(() -> {
+                myTreeView.setRoot(item);
+                myButton.setText("生成文件树");
+            });
+        }).start();
     }
 
     //"选择目录"按钮：获得想要制作文件树的路径
     public void openDir(ActionEvent event) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        File file = directoryChooser.showDialog(stage);
-        myText.setText(file.getPath());
+        File file = directoryChooser.showDialog(null);
+        if (file != null)
+            myText.setText(file.getPath());
     }
 
+
     //"保存文件树"按钮：将层级目录保存到本地
-    public void saveDir(ActionEvent event) throws IOException {
-        String path = myText.getText();
-        long size = Long.parseLong(ignoreFileSize.getText());
-        File file = new File(path);
-        saveFileTree(path, file.getName(), size);
+    public void saveDir(ActionEvent event) {
+        //多线程
+        new Thread(() ->{
+            Platform.runLater(() -> saveDir.setText("生成中..."));
+            String path = myText.getText();
+            long size = Long.parseLong(ignoreFileSize.getText());
+            File file = new File(path);
+            saveFileTree(path, file.getName(), size);
+            Platform.runLater(() -> saveDir.setText("保存文件树"));
+        }).start();
+
     }
 
 }
