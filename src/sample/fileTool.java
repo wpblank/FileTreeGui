@@ -149,7 +149,7 @@ class fileTool {
     //文件大小格式化
     static String sizeFormat(long size) {
         if (size < 1024)
-            return size + " B";
+            return size + "B";
         else if (size < 1024 * 1024)
             return String.format("%.2f", size / 1024.0) + "KB";
         else if (size < 1024 * 1024 * 1024)
