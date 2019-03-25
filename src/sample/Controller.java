@@ -11,6 +11,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -41,7 +42,6 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO (don't really need to do anything here).
-
     }
 
     /**
@@ -52,7 +52,6 @@ public class Controller implements Initializable {
      */
     private TreeItem<String> initTreeView(String path) {
         return initTreeView(path, 0);
-
     }
 
     /**
@@ -66,39 +65,38 @@ public class Controller implements Initializable {
         long size0;
         File file = new File(path);
         size0 = getDirSize(file);
-        TreeItem<String> item = new TreeItem<>("[" + sizeFormat(size0) + "]\t" + file.getName());
+        TreeItem<String> item = new TreeItem<>(file.getName() + "\t" + sizeFormat(size0));
         item.setExpanded(false);
         if (file.exists()) {
             File[] files = file.listFiles();
-            if (files != null) {
-                if (files.length != 0) {
-                    //对文件和文件夹按名称进行排序
-                    Arrays.sort(files, (o1, o2) -> {
-                        //将文件夹与文件分开排序
-                        if (o1.isDirectory() && o2.isFile())
-                            return -1;
-                        else if (o2.isDirectory() && o1.isFile())
-                            return 1;
-                        //对字符串大写处理，使返回的拼音为小写、英文为大写，从而将英文和中文分开排序。
-                        return GetPinYin.getPinYin(o1.getName().toUpperCase()).compareTo(GetPinYin.getPinYin(o2.getName().toUpperCase()));
-                    });
+            if (files != null && files.length != 0) {
+                //对文件和文件夹按名称进行排序
+                Arrays.sort(files, (o1, o2) -> {
+                    //将文件夹与文件分开排序
+                    if (o1.isDirectory() && o2.isFile())
+                        return -1;
+                    else if (o2.isDirectory() && o1.isFile())
+                        return 1;
+                    //对字符串大写处理，使返回的拼音为小写、英文为大写，从而将英文和中文分开排序。
+                    return GetPinYin.getPinYin(o1.getName().toUpperCase()).compareTo(GetPinYin.getPinYin(o2.getName().toUpperCase()));
+                });
 
-                    for (File file2 : files) {
-                        if (file2.isDirectory()) {
-                            size0 = getDirSize(file2);
-                            if (size == 0 || size0 > size) {
-                                item.getChildren().add(initTreeView(file2.getAbsolutePath(), size));
-                            }
-                        } else {
-                            size0 = file2.length();
-                            if (size == 0 || size0 > size) {
-                                TreeItem<String> i2 = new TreeItem<>("[" + sizeFormat(size0) + "]\t" + file2.getName());
-                                item.getChildren().add(i2);
-                            }
+                for (File file2 : files) {
+                    if (file2.isDirectory()) {
+                        size0 = getDirSize(file2);
+                        if (size == 0 || size0 > size) {
+                            item.getChildren().add(initTreeView(file2.getAbsolutePath(), size));
+                        }
+                    } else {
+                        size0 = file2.length();
+                        if (size == 0 || size0 > size) {
+                            TreeItem<String> i2 = new TreeItem<>(file2.getName() + "\t" + sizeFormat(size0));
+                            item.getChildren().add(i2);
                         }
                     }
                 }
             }
+
         } else {
             System.out.println("文件夹不存在!");
         }
@@ -115,7 +113,7 @@ public class Controller implements Initializable {
         item.setExpanded(true);
         myTreeView.setRoot(item);
         //myButton.setText("生成文件树");
-        System.out.println(path + "1");
+        //System.out.println(path + "1");
     }
 
     //"选择目录"按钮：获得想要制作文件树的路径
@@ -126,7 +124,7 @@ public class Controller implements Initializable {
     }
 
     //"保存文件树"按钮：将层级目录保存到本地
-    public void saveDir(ActionEvent event) {
+    public void saveDir(ActionEvent event) throws IOException {
         String path = myText.getText();
         long size = Long.parseLong(ignoreFileSize.getText());
         File file = new File(path);
