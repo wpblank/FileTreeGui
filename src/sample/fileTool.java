@@ -48,16 +48,7 @@ class fileTool {
             if (files != null && bufw != null) {
                 if (files.length != 0) {
                     //对文件和文件夹进行排序
-                    Arrays.sort(files, (o1, o2) -> {
-                        //将文件夹与文件分开排序
-                        if (o1.isDirectory() && o2.isFile())
-                            return -1;
-                        else if (o2.isDirectory() && o1.isFile())
-                            return 1;
-                        //对字符串大写处理，使返回的拼音为小写、英文为大写，从而将英文和中文分开排序。
-                        return GetPinYin.getPinYin(o1.getName().toUpperCase()).compareTo(GetPinYin.getPinYin(o2.getName().toUpperCase()));
-                    });
-
+                    sortFiles(files);
                     long size0;
                     for (File file2 : files) {
 
@@ -114,6 +105,19 @@ class fileTool {
         }
     }
 
+    static void sortFiles(File[] files) {
+        Arrays.sort(files, (o1, o2) -> {
+            // 将文件夹与文件分开排序
+            if (o1.isDirectory() && o2.isFile()) {
+                return -1;
+            } else if (o2.isDirectory() && o1.isFile()) {
+                return 1;
+            }
+            // 对字符串大写处理，使返回的拼音为小写、英文为大写，从而将英文和中文分开排序。
+            return GetPinYin.getPinYin(o1.getName().toUpperCase()).compareTo(GetPinYin.getPinYin(o2.getName().toUpperCase()));
+        });
+    }
+
     //保存目录文件和文件夹名称和大小
     static void saveFileTree(String path, String name) {
         saveFileTree(path, name, 0, 0);
@@ -124,15 +128,20 @@ class fileTool {
         saveFileTree(path, name, size, 0);
     }
 
-    //获取文件夹目录大小
+    /**
+     * 获取文件夹目录大小
+     *
+     * @param file
+     * @return
+     */
     static long getDirSize(File file) {
         long size = 0;
         if (file.exists()) {
             File[] files = file.listFiles();
             if (files != null) {
-                if (files.length == 0)
+                if (files.length == 0) {
                     return 0;
-                else {
+                } else {
                     for (File file1 : files) {
                         if (file1.isDirectory()) {
                             size = size + getDirSize(file1);
@@ -146,16 +155,24 @@ class fileTool {
         return size;
     }
 
-    //文件大小格式化
+    /**
+     * 文件大小格式化
+     *
+     * @param size 文件大小
+     * @return
+     */
     static String sizeFormat(long size) {
-        if (size < 1024)
-            return size + " B";
-        else if (size < 1024 * 1024)
-            return String.format("%.2f", size / 1024.0) + "KB";
-        else if (size < 1024 * 1024 * 1024)
-            return String.format("%.2f", size / (1024 * 1024.0)) + "MB";
-        else
-            return String.format("%.2f", size / (1024 * 1024 * 1024.0)) + "GB";
+        String sizeString;
+        if (size < 1024) {
+            sizeString = size + " B";
+        } else if (size < 1024 * 1024) {
+            sizeString = String.format("%.2f", size / 1024.0) + "KB";
+        } else if (size < 1024 * 1024 * 1024) {
+            sizeString = String.format("%.2f", size / (1024 * 1024.0)) + "MB";
+        } else {
+            sizeString = String.format("%.2f", size / (1024 * 1024 * 1024.0)) + "GB";
+        }
+        return sizeString;
     }
 
 }
